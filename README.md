@@ -21,15 +21,16 @@ from email import encoders
 from subprocess import call
 
 
-GPIO.setmode(GPIO.BCM)
+GPIO.setmode(GPIO.BCM)  # A GPIO definiálása BCM módra Ez az amikor a címzésnél a GPIO számát hasznájuk
 
-infra=23
-servo=24
-pixels = neopixel.NeoPixel(board.D18, 8)
+infra=23   #Infra vezérlő GPIO portszáma változó definiálás
+servo=24   #Szervó GPIO portszáma változó definiálá
+pixels = neopixel.NeoPixel(board.D18, 8)   # A LED beállítása a GPIO D18 portra
+
 
 GPIO.setwarnings(False)
-GPIO.setup(23,GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(24,GPIO.OUT)
+GPIO.setup(23,GPIO.IN, pull_up_down=GPIO.PUD_UP)   # Az infra(23) port beállítsa bemeneti portként
+GPIO.setup(24,GPIO.OUT)   # Az servo(24) port beállítsa kimeneti portként
 camera=PiCamera()
 pwm = GPIO.PWM(24, 50) # Szervo def.
 pwm.start(7.5)   # Szervo zárás
@@ -38,21 +39,21 @@ while True:
    if GPIO.input(23)==0:
        pwm.ChangeDutyCycle(10.5)
        time.sleep(1)
-       pwm.stop()
+       pwm.stop()   # A szervó működtetés kikapcsolása, hogy tartsa a "nyitott" pozíciót
        GPIO.cleanup()
        time.sleep(2)
    
        for x in range(0, 8):   #Lámpa LED-ek 
-           pixels[x] = (255, 255, 255)  # Szín fehér
+           pixels[x] = (255, 255, 255)  # LED fehér színben bekapcsolása
        
        camera.start_preview()  
        sleep(2)  
-       camera.capture('/home/pi/image.jpg')     
+       camera.capture('/home/pi/image.jpg')   # Kamera kép lementése    
        sleep(3)  
        camera.stop_preview()
        
        for x in range(0, 8):
-           pixels[x] = (0, 0, 0)
+           pixels[x] = (0, 0, 0)   # a LED fekete színben bekapcsolása azaz kikapcsolása
            
        def send_an_email():  
            toaddr = 'ikkert14@gmail.com'
